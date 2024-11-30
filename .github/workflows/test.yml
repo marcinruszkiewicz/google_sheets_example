@@ -1,109 +1,76 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
 name: Elixir CI
-
-env:
-  MIX_ENV: test
-
-concurrency:
-  group: ${{ github.head_ref || github.ref_name }}
-  cancel-in-progress: true
 
 on:
   push:
-    branches: 
-      - main
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
 
 jobs:
-  deps:
-    name: Dependencies
+  build:
+    name: Build and test
     runs-on: ubuntu-latest
     env:
-      MIX_ENV: test
+      PGHOST: localhost
+      PGDATABASE: google_sheets_test
+      PGUSERNAME: postgres
+      PGPASSWORD: postgres
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    - name: Add PostgreSQL binaries to PATH
+      shell: bash
+      run: |
+        if [ "$RUNNER_OS" == "Windows" ]; then
+          echo "$PGBIN" >> $GITHUB_PATH
+        elif [ "$RUNNER_OS" == "Linux" ]; then
+          echo "$(pg_config --bindir)" >> $GITHUB_PATH
+        fi
+    - name: Start preinstalled PostgreSQL
+      shell: bash
+      run: |
+        echo "Initializing database cluster..."
 
-      - name: Setup
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: '1.17'
-          otp-version: '27.0'
+        # Convert backslashes to forward slashes in RUNNER_TEMP for Windows Git Bash
+        export PGHOST="${RUNNER_TEMP//\\//}/postgres"
+        export PGDATA="$PGHOST/pgdata"
+        mkdir -p "$PGDATA"
 
-      - name: Retrieve Cached Dependencies
-        uses: actions/cache@v4
-        id: mix-cache
-        with:
-          path: |
-            deps
-            _build
-            priv/plts
-          key: ${{ runner.os }}-${{ inputs.otp }}-${{ inputs.elixir }}-${{ hashFiles('mix.lock') }}
+        # initdb requires file for password in non-interactive mode
+        export PWFILE="$RUNNER_TEMP/pwfile"
+        echo "postgres" > "$PWFILE"
+        initdb --pgdata="$PGDATA" --username="postgres" --pwfile="$PWFILE"
 
-      - name: Install Dependencies
-        if: steps.mix-cache.outputs.cache-hit != 'true'
-        run: |
-          mkdir -p priv/plts
-          mix local.rebar --force
-          mix local.hex --force
-          mix deps.get
+        echo "Starting PostgreSQL..."
+        echo "unix_socket_directories = '$PGHOST'" >> "$PGDATA/postgresql.conf"
+        pg_ctl start
 
-      - name: Compile
-        if: steps.mix-cache.outputs.cache-hit != 'true'
-        run: |
-          mix deps.compile
+        echo "Creating user..."
+        psql --host "$PGHOST" --username="postgres" --dbname="postgres" --command="CREATE USER $PGUSERNAME PASSWORD '$PGPASSWORD'" --command="\du"
 
-      - name: Check Unused Dependencies
-        run: |
-          mix deps.unlock --check-unused
-
-      - name: Audit Dependencies
-        run: |
-          mix hex.audit
-
-  unit_tests:
-    name: Unit Tests
-    needs: deps
-    runs-on: ubuntu-latest
-    services:
-      db:
-        image: postgres:latest
-        ports: ["5432:5432"]
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-    env:
-      MIX_ENV: test
-    strategy:
-      fail-fast: false
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup
-        uses: erlef/setup-beam@v1
-        with:
-          elixir-version: '1.17'
-          otp-version: '27.0'
-
-      - name: Retrieve Cached Dependencies
-        uses: actions/cache@v4
-        id: mix-cache
-        with:
-          path: |
-            deps
-            _build
-          key: ${{ runner.os }}-${{ inputs.otp }}-${{ inputs.elixir }}-${{ hashFiles('mix.lock') }}
-
-      - name: Reset db
-        run: mix ecto.drop
-
-      - name: Create db
-        run: mix ecto.create
-
-      - name: Run Tests
-        run: mix test
-        
+        echo "Creating database..."
+        createdb --owner="$PGUSERNAME" --username="postgres" "$PGDATABASE"
+    - uses: actions/checkout@v4
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: '1.17' # [Required] Define the Elixir version
+        otp-version: '27.0'      # [Required] Define the Erlang/OTP version
+    - name: Restore dependencies cache
+      uses: actions/cache@v4
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-
+    - name: Install dependencies
+      run: mix deps.get
+    - name: Run migrations
+      run: MIX_ENV=test mix ecto.migrate
+    - name: Run tests
+      run: mix test
