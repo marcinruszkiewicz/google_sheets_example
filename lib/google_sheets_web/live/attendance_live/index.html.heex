@@ -1,0 +1,10 @@
+<.header>
+  Attendance Stats
+</.header>
+
+<.table id="attendances" rows={@streams.attendances}>
+  <:col :let={{_id, attendance}} label="Name"><%= attendance.name %></:col>
+  <:col :let={{_id, attendance}} label="Times flown"><%= attendance.times_flown %></:col>
+  <:col :let={{_id, attendance}} label="Sheet name"><%= attendance.sheet_name %></:col>
+  <:col :let={{_id, attendance}} label="Practice date"><%= attendance.practice_date %></:col>
+</.table>
