@@ -55,6 +55,7 @@ defmodule GoogleSheets.MixProject do
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
       {:timex, "~> 3.7"},
+      {:goth, "~> 1.4"},
       {:google_api_sheets, "~> 0.34.0"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},

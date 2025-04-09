@@ -10,7 +10,7 @@ defmodule GoogleSheets.AttendanceFactory do
           name: "player name",
           times_flown: 5,
           practice_date: ~D[2024-11-22],
-          sheet_name: "Brave - Nov 11"
+          sheet_name: "22 November - Brave"
         }
       end
     end

@@ -3,8 +3,9 @@
 </.header>
 
 <.table id="attendances" rows={@streams.attendances}>
-  <:col :let={{_id, attendance}} label="Name"><%= attendance.name %></:col>
-  <:col :let={{_id, attendance}} label="Times flown"><%= attendance.times_flown %></:col>
-  <:col :let={{_id, attendance}} label="Sheet name"><%= attendance.sheet_name %></:col>
-  <:col :let={{_id, attendance}} label="Practice date"><%= attendance.practice_date %></:col>
+  <:col :let={{_id, attendance}} label="Name">{attendance.name}</:col>
+  <:col :let={{_id, attendance}} label="Times flown">{attendance.matches}</:col>
+  <:col :let={{_id, attendance}} label="Practices">{attendance.practices}</:col>
+  <:col :let={{_id, attendance}} label="Last Practice Date">{attendance.last_practice_date}</:col>
+  <:col :let={{_id, attendance}} label="Last Practice Name">{attendance.last_practice_name}</:col>
 </.table>

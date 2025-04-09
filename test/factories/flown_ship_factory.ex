@@ -10,7 +10,7 @@ defmodule GoogleSheets.FlownShipFactory do
           name: "player name",
           ship_name: "Bhargest",
           practice_date: ~D[2024-11-22],
-          sheet_name: "Brave - Nov 11"
+          sheet_name: "22 November - Brave"
         }
       end
     end
