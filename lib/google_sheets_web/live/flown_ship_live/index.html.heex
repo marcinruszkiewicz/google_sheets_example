@@ -3,8 +3,6 @@
 </.header>
 
 <.table id="flown_ships" rows={@streams.flown_ships}>
-  <:col :let={{_id, flown_ship}} label="Name">{flown_ship.name}</:col>
   <:col :let={{_id, flown_ship}} label="Ship name">{flown_ship.ship_name}</:col>
-  <:col :let={{_id, flown_ship}} label="Sheet name">{flown_ship.sheet_name}</:col>
-  <:col :let={{_id, flown_ship}} label="Practice date">{flown_ship.practice_date}</:col>
+  <:col :let={{_id, flown_ship}} label="Times Flown">{flown_ship.times_flown}</:col>
 </.table>

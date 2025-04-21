@@ -6,7 +6,7 @@ defmodule GoogleSheetsWeb.FlownShipLive.Index do
   @impl true
   def mount(_params, _session, socket) do
     socket =
-      stream(socket, :flown_ships, Stats.list_flown_ships())
+      stream(socket, :flown_ships, Stats.list_ship_stats())
 
     {:ok, socket}
   end

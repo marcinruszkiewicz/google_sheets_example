@@ -53,4 +53,18 @@ defmodule GoogleSheets.Stats do
 
     Repo.all(query)
   end
+
+  def list_ship_stats do
+    query =
+      from s in FlownShip,
+        group_by: [s.ship_name],
+        select: %GoogleSheets.Stats.ShipView{
+          id: s.ship_name,
+          ship_name: s.ship_name,
+          times_flown: count(s.ship_name)
+        },
+        order_by: [desc: count(s.ship_name)]
+
+    Repo.all(query)
+  end
 end
