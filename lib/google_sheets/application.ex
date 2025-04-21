@@ -8,11 +8,15 @@ defmodule GoogleSheets.Application do
   @impl true
   def start(_type, _args) do
     credentials = "GCP_CREDENTIALS" |> System.fetch_env!() |> Jason.decode!()
-    scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+
+    scopes = [
+      "https://www.googleapis.com/auth/spreadsheets",
+      "https://www.googleapis.com/auth/drive"
+    ]
+
     source = {:service_account, credentials, scopes: scopes}
 
     children = [
-      GoogleSheetsWeb.Telemetry,
       GoogleSheets.Repo,
       {DNSCluster, query: Application.get_env(:google_sheets, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: GoogleSheets.PubSub},

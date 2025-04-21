@@ -8,8 +8,7 @@ defmodule Mix.Tasks.Import.Ships do
 
   @impl Mix.Task
   def run(args) do
-    {parsed, _, _} =
-      OptionParser.parse(args, strict: [sheet: :string, year: :integer])
+    {parsed, _, _} = OptionParser.parse(args, strict: [sheet: :string, year: :integer])
 
     Mix.Task.run("app.start")
 

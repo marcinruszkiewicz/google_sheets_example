@@ -8,9 +8,7 @@ defmodule Mix.Tasks.Import.Attendance do
 
   @impl Mix.Task
   def run(args) do
-    {parsed, _, _} =
-      OptionParser.parse(args, strict: [sheet: :string, year: :integer])
-
+    {parsed, _, _} = OptionParser.parse(args, strict: [sheet: :string, year: :integer])
     Mix.Task.run("app.start")
 
     GoogleSheets.Importers.Attendance.process(parsed[:sheet], parsed[:year])
