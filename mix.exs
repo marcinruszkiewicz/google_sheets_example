@@ -57,6 +57,7 @@ defmodule GoogleSheets.MixProject do
       {:timex, "~> 3.7"},
       {:goth, "~> 1.4"},
       {:google_api_sheets, "~> 0.34.0"},
+      {:faker, "~> 0.19.0-alpha.1"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:phoenix_live_reload, "~> 1.2", only: :dev},

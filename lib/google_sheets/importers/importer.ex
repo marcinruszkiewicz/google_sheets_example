@@ -5,8 +5,8 @@ defmodule GoogleSheets.Importers.Importer do
               atom()
 
   def connect() do
-    # setup json key in ~/.config/gcloud/application_default_credentials.json
-    {:ok, token} = Goth.Token.for_scope("https://www.googleapis.com/auth/spreadsheets")
+    # setup json key in GCP_CREDENTIALS env
+    {:ok, token} = Goth.fetch(GoogleSheets.Goth)
     GoogleApi.Sheets.V4.Connection.new(token.token)
   end
 

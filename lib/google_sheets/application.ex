@@ -7,6 +7,10 @@ defmodule GoogleSheets.Application do
 
   @impl true
   def start(_type, _args) do
+    credentials = "GCP_CREDENTIALS" |> System.fetch_env!() |> Jason.decode!()
+    scopes = ["https://www.googleapis.com/auth/spreadsheets"]
+    source = {:service_account, credentials, scopes: scopes}
+
     children = [
       GoogleSheetsWeb.Telemetry,
       GoogleSheets.Repo,
@@ -14,6 +18,7 @@ defmodule GoogleSheets.Application do
       {Phoenix.PubSub, name: GoogleSheets.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: GoogleSheets.Finch},
+      {Goth, name: GoogleSheets.Goth, source: source},
       # Start a worker by calling: GoogleSheets.Worker.start_link(arg)
       # {GoogleSheets.Worker, arg},
       # Start to serve requests, typically the last entry
