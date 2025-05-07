@@ -34,16 +34,17 @@ defmodule GoogleSheets.Exporters.PracticeTracker do
       title = "#{index} March - #{name}"
       {:ok, %{sheetId: copied_sheet_id}} = copy_sheet(conn, spreadsheet_id, sheet_id)
       rename_sheet(conn, spreadsheet_id, copied_sheet_id, title)
-        thumbs = all_players |> Enum.map(fn name -> [name] end)
-        insert_data(conn, spreadsheet_id, "'#{title}'!A2", thumbs)
+      
+      thumbs = all_players |> Enum.map(fn name -> [name] end)
+      insert_data(conn, spreadsheet_id, "'#{title}'!A2", thumbs)
 
-        Enum.each(1..4, fn set_num -> 
-          set_players = all_players |> Enum.shuffle() |> Enum.take(6) |> Enum.map(fn name -> [name] end)
-          insert_data(conn, spreadsheet_id, "'#{title}'!#{@set_player_fields[set_num]}", set_players)
+      Enum.each(1..4, fn set_num -> 
+        set_players = all_players |> Enum.shuffle() |> Enum.take(6) |> Enum.map(fn name -> [name] end)
+        insert_data(conn, spreadsheet_id, "'#{title}'!#{@set_player_fields[set_num]}", set_players)
 
-          set_ships = all_ships |> Enum.shuffle() |> Enum.take(6) |> Enum.map(fn name -> [name] end)
-          insert_data(conn, spreadsheet_id, "'#{title}'!#{@set_ship_fields[set_num]}", set_ships)
-        end)
+        set_ships = all_ships |> Enum.shuffle() |> Enum.take(6) |> Enum.map(fn name -> [name] end)
+        insert_data(conn, spreadsheet_id, "'#{title}'!#{@set_ship_fields[set_num]}", set_ships)
+      end)
     end)
 
     {:ok, spreadsheet_id}

@@ -1,5 +1,14 @@
 import Config
 
+import Dotenvy
+
+source!([
+  Path.absname(".env"),
+  System.get_env()
+])
+
+config :google_sheets, gcp_credentials: env!("GSE_GCP_CREDENTIALS", :string!)
+
 # config/runtime.exs is executed for all environments, including
 # during releases. It is executed after compilation and before the
 # system starts, so it is typically used to load production configuration
@@ -50,8 +59,6 @@ if config_env() == :prod do
 
   host = System.get_env("PHX_HOST") || "example.com"
   port = String.to_integer(System.get_env("PORT") || "4000")
-
-  config :google_sheets, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
 
   config :google_sheets, GoogleSheetsWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],

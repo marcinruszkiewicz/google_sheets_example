@@ -7,7 +7,7 @@ defmodule GoogleSheets.Application do
 
   @impl true
   def start(_type, _args) do
-    credentials = "GCP_CREDENTIALS" |> System.fetch_env!() |> Jason.decode!()
+    credentials = Application.get_env(:google_sheets, :gcp_credentials) |> Jason.decode!()
 
     scopes = [
       "https://www.googleapis.com/auth/spreadsheets",
@@ -18,7 +18,6 @@ defmodule GoogleSheets.Application do
 
     children = [
       GoogleSheets.Repo,
-      {DNSCluster, query: Application.get_env(:google_sheets, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: GoogleSheets.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: GoogleSheets.Finch},

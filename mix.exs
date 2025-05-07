@@ -49,6 +49,7 @@ defmodule GoogleSheets.MixProject do
       {:google_api_sheets, "~> 0.34.0"},
       {:google_api_drive, "~> 0.32.0"},
       {:faker, "~> 0.19.0-alpha.1"},
+      {:dotenvy, "~> 1.1"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2", runtime: Mix.env() == :dev},
       {:phoenix_live_reload, "~> 1.2", only: :dev},

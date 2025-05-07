@@ -1,8 +1,8 @@
 defmodule Mix.Tasks.Export.Practice do
-  @shortdoc "import attendance from google sheets"
+  @shortdoc "generate attendance data and save it to google sheets"
 
   @moduledoc """
-  Console task for importing the attendance data.
+  Console task for exporting the attendance data.
   """
   use Mix.Task
 

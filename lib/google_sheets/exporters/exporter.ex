@@ -41,7 +41,6 @@ defmodule GoogleSheets.Exporters.Exporter do
   ]
 
   def connect() do
-    # setup json key in GCP_CREDENTIALS env
     {:ok, token} = Goth.fetch(GoogleSheets.Goth)
     GoogleApi.Sheets.V4.Connection.new(token.token)
   end
