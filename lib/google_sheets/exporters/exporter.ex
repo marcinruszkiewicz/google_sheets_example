@@ -58,7 +58,7 @@ defmodule GoogleSheets.Exporters.Exporter do
         insert_data(conn, spreadsheet_id, "'! Practice Template'!K44", @matches)
 
         sheet = Enum.at(spreadsheet.sheets, 0)
-        create_thumbs_counter(conn, spreadsheet_id, sheet.properties.sheetId)
+        create_attendance_counter(conn, spreadsheet_id, sheet.properties.sheetId)
 
       {:ok, %{spreadsheet: spreadsheet_id, template_sheet: sheet.properties.sheetId}}
     else
@@ -185,7 +185,7 @@ defmodule GoogleSheets.Exporters.Exporter do
     end
   end
 
-  defp create_thumbs_counter(conn, spreadsheet_id, sheet_id) do
+  defp create_attendance_counter(conn, spreadsheet_id, sheet_id) do
     requests = [
       %{
         repeatCell: %{
