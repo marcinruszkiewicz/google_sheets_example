@@ -16,7 +16,7 @@ defmodule GoogleSheetsWeb.FlownShipLiveTest do
       {:ok, _index_live, html} = live(conn, ~p"/ships")
 
       assert html =~ "Ship Stats"
-      assert html =~ flown_ship.name
+      assert html =~ flown_ship.ship_name
     end
   end
 end

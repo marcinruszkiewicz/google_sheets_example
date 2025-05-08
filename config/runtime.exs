@@ -2,8 +2,11 @@ import Config
 
 import Dotenvy
 
+env_dir = System.get_env("RELEASE_ROOT") || Path.expand("./envs")
+
 source!([
-  Path.absname(".env"),
+  Path.absname(".env", env_dir),
+  Path.absname(".#{config_env()}.env", env_dir),
   System.get_env()
 ])
 
