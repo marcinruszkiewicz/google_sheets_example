@@ -23,6 +23,7 @@ jobs:
       PGDATABASE: google_sheets_test
       PGUSERNAME: postgres
       PGPASSWORD: postgres
+      GSE_GCP_CREDENTIALS: ${{ secrets.GSE_GCP_CREDENTIALS }}
     steps:
     - name: Add PostgreSQL binaries to PATH
       shell: bash
